@@ -166,7 +166,7 @@ class ValueType:
     Attributes:
         type             nonstd/pod/record/smart-pointer/container/iterator/void/bool/char/short/wchar_t/int/long/long long/unknown int/float/double/long double
         sign             signed/unsigned
-        bits
+        bits             bit count for bit-fields, otherwise None
         pointer
         constness
         reference
@@ -178,7 +178,7 @@ class ValueType:
 
     type = None
     sign = None
-    bits = 0
+    bits = None
     constness = 0
     pointer = 0
     typeScopeId = None
@@ -188,7 +188,8 @@ class ValueType:
     def __init__(self, element):
         self.type = element.get('valueType-type')
         self.sign = element.get('valueType-sign')
-        self.bits = int(element.get('valueType-bits', 0))
+        self.bits = element.get('valueType-bits', None)
+        self.bits = int(self.bits) if self.bits else None
         self.pointer = int(element.get('valueType-pointer', 0))
         self.constness = int(element.get('valueType-constness', 0))
         self.reference = element.get('valueType-reference')
@@ -262,6 +263,7 @@ class Token:
         isComplex
         isRestrict
         isAttributeExport
+        isAnonymous
         varId              varId for token, each variable has a unique non-zero id
         exprId             exprId for token, each expression has a unique non-zero id
         variable           Variable information for this token. See the Variable class.
@@ -272,7 +274,7 @@ class Token:
         astParent          ast parent
         astOperand1        ast operand1
         astOperand2        ast operand2
-        orriginalName      orriginal name of the token
+        orriginalName      original name of the token
         valueType          type information: container/..
         file               file name
         linenr             line number
@@ -323,6 +325,7 @@ class Token:
     isComplex = False
     isRestrict = False
     isAttributeExport = False
+    isAnonymous = False
     exprId = None
     varId = None
     variableId = None
@@ -406,6 +409,8 @@ class Token:
             self.isRestrict = True
         if element.get('isAttributeExport'):
             self.isAttributeExport = True
+        if element.get('isAnonymous'):
+            self.isAnonymous = True
         self.linkId = element.get('link')
         self.link = None
         if element.get('varId'):
@@ -439,7 +444,7 @@ class Token:
                 "isChar", "isBoolean", "isOp", "isArithmeticalOp", "isAssignmentOp", 
                 "isComparisonOp", "isLogicalOp", "isCast", "externLang", "isExpandedMacro", 
                 "isRemovedVoidParameter", "isSplittedVarDeclComma", "isSplittedVarDeclEq", 
-                "isImplicitInt", "isComplex", "isRestrict", "isAttributeExport", "linkId", 
+                "isImplicitInt", "isComplex", "isRestrict", "isAttributeExport", "isAnonymous", "linkId",
                 "varId", "variableId", "functionId", "valuesId", "valueType",
                 "typeScopeId", "astParentId", "astOperand1Id", "file",
                 "linenr", "column"]
@@ -998,7 +1003,7 @@ class Suppression:
                 and (self.symbolName is None or fnmatch(message, '*'+self.symbolName+'*'))
                 and fnmatch(errorId, self.errorId)):
             return True
-        # Other Suppression (Globaly set via suppression file or cli command)
+        # Other Suppression (Globally set via suppression file or cli command)
         if ((self.fileName is None or fnmatch(file, self.fileName))
                 and (self.suppressionType is None)
                 and (self.symbolName is None or fnmatch(message, '*'+self.symbolName+'*'))
@@ -1218,6 +1223,7 @@ class CppcheckData:
         """
         :param filename: Path to Cppcheck dump file
         """
+        self.language = None
         self.filename = filename
         self.rawTokens = []
         self.platform = None
@@ -1234,6 +1240,8 @@ class CppcheckData:
         for event, node in ElementTree.iterparse(self.filename, events=('start', 'end')):
             if platform_done and rawtokens_done and suppressions_done:
                 break
+            if node.tag == 'dumps':
+                self.language = node.get('language')
             if node.tag == 'platform' and event == 'start':
                 self.platform = Platform(node)
                 platform_done = True
@@ -1333,7 +1341,7 @@ class CppcheckData:
             # Parse tokens
             elif node.tag == 'tokenlist' and event == 'start':
                 continue
-            elif node.tag == 'token' and event == 'start' and not iter_directive:
+            elif node.tag == 'token' and event == 'start' and not iter_directive and not iter_typedef_info:
                 cfg.tokenlist.append(Token(node))
 
             # Parse scopes
@@ -1711,8 +1719,9 @@ def get_path_premium_addon():
 
 def cmd_output(cmd):
     with subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as p:
-        comm = p.communicate()
-        out = comm[0]
-        if p.returncode == 1 and len(comm[1]) > 2:
-            out = comm[1]
-        return out.decode(encoding='utf-8', errors='ignore')
+        stdout, stderr = p.communicate()
+        rc = p.returncode
+    out = stdout
+    if rc == 1 and len(stderr) > 2:
+        out = stderr
+    return out.decode(encoding='utf-8', errors='ignore')

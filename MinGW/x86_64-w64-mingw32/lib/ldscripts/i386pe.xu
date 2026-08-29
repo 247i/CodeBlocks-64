@@ -1,10 +1,10 @@
 /* Script for -Ur */
-/* Copyright (C) 2014-2025 Free Software Foundation, Inc.
+/* Copyright (C) 2014-2026 Free Software Foundation, Inc.
    Copying and distribution of this script, with or without modification,
    are permitted in any medium without royalty provided the copyright
    notice and this notice are preserved.  */
 OUTPUT_FORMAT(pe-i386)
-SEARCH_DIR("/r/winlibs_staging_ucrt/56248.binutils/inst_binutils-2.44/share/binutils/x86_64-w64-mingw32/lib");
+SEARCH_DIR("/c/Prog/winlibs_staging_msvcrt/home64/inst_binutils-2.47/share/binutils/x86_64-w64-mingw32/lib");
 SECTIONS
 {
   .text  :
@@ -25,6 +25,9 @@ SECTIONS
   {
     *(.rdata)
     . = ALIGN(4);
+    /* read-only parts of .didat */
+    /* This cannot currently be handled with grouped sections.
+	See pe.em:sort_sections.  */
     /* .ctors & .dtors */
        /* Note: we always define __CTOR_LIST__ and ___CTOR_LIST__ here,
           we do not PROVIDE them.  This is because the ctors.o startup
@@ -87,6 +90,11 @@ SECTIONS
     *(.debug$F)
   }
   .idata  :
+  {
+    /* This cannot currently be handled with grouped sections.
+	See pe.em:sort_sections.  */
+  }
+  .didat  :
   {
     /* This cannot currently be handled with grouped sections.
 	See pe.em:sort_sections.  */
@@ -167,11 +175,11 @@ SECTIONS
   }
   .debug_frame   :
   {
-    *(.debug_frame*)
+    *(.debug_frame)
   }
   .zdebug_frame   :
   {
-    *(.zdebug_frame*)
+    *(.zdebug_frame)
   }
   .debug_str   :
   {

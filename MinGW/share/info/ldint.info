@@ -1,8 +1,8 @@
-This is ldint.info, produced by makeinfo version 7.1 from ldint.texi.
+This is ldint.info, produced by makeinfo version 7.2 from ldint.texi.
 
 This file documents the internals of the GNU linker ld.
 
-   Copyright © 1992-2025 Free Software Foundation, Inc.  Contributed by
+   Copyright © 1992-2026 Free Software Foundation, Inc.  Contributed by
 Cygnus Support.
 
    Permission is granted to copy, distribute and/or modify this document
@@ -1170,7 +1170,6 @@ situation.
 recommend releasing these examples in parallel under your choice of free
 software license, such as the GNU General Public License, to permit
 their use in free software.
-
 
 
 Tag Table:

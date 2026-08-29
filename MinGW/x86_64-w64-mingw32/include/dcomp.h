@@ -555,6 +555,54 @@ __CRT_UUID_DECL(IDCompositionSaturationEffect,0xa08debda,0x3258,0x4fa4,0x9f,0x16
 
 
 #undef INTERFACE
+#define INTERFACE IDCompositionTableTransferEffect
+DECLARE_INTERFACE_IID_(IDCompositionTableTransferEffect, IDCompositionFilterEffect, "9B7E82E2-69C5-4EB4-A5F5-A7033F5132CD")
+{
+    STDMETHOD(SetRedTable)(THIS_ const float *tableValues, UINT count) PURE;
+    STDMETHOD(SetGreenTable)(THIS_ const float *tableValues, UINT count) PURE;
+    STDMETHOD(SetBlueTable)(THIS_ const float *tableValues, UINT count) PURE;
+    STDMETHOD(SetAlphaTable)(THIS_ const float *tableValues, UINT count) PURE;
+    STDMETHOD(SetRedDisable)(THIS_ BOOL redDisable) PURE;
+    STDMETHOD(SetGreenDisable)(THIS_ BOOL greenDisable) PURE;
+    STDMETHOD(SetBlueDisable)(THIS_ BOOL blueDisable) PURE;
+    STDMETHOD(SetAlphaDisable)(THIS_ BOOL alphaDisable) PURE;
+    STDMETHOD(SetClampOutput)(THIS_ BOOL clampOutput) PURE;
+#if defined(_MSC_VER) && defined(__cplusplus)
+    STDMETHOD(SetRedTableValue)(THIS_ UINT index, float value) PURE;
+    STDMETHOD(SetRedTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+#else
+    STDMETHOD(SetRedTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+    STDMETHOD(SetRedTableValue)(THIS_ UINT index, float value) PURE;
+#endif
+#if defined(_MSC_VER) && defined(__cplusplus)
+    STDMETHOD(SetGreenTableValue)(THIS_ UINT index, float value) PURE;
+    STDMETHOD(SetGreenTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+#else
+    STDMETHOD(SetGreenTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+    STDMETHOD(SetGreenTableValue)(THIS_ UINT index, float value) PURE;
+#endif
+#if defined(_MSC_VER) && defined(__cplusplus)
+    STDMETHOD(SetBlueTableValue)(THIS_ UINT index, float value) PURE;
+    STDMETHOD(SetBlueTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+#else
+    STDMETHOD(SetBlueTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+    STDMETHOD(SetBlueTableValue)(THIS_ UINT index, float value) PURE;
+#endif
+#if defined(_MSC_VER) && defined(__cplusplus)
+    STDMETHOD(SetAlphaTableValue)(THIS_ UINT index, float value) PURE;
+    STDMETHOD(SetAlphaTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+#else
+    STDMETHOD(SetAlphaTableValue)(THIS_ UINT index, IDCompositionAnimation *animation) PURE;
+    STDMETHOD(SetAlphaTableValue)(THIS_ UINT index, float value) PURE;
+#endif
+};
+
+#ifdef __CRT_UUID_DECL
+__CRT_UUID_DECL(IDCompositionTableTransferEffect,0x9b7e82e2,0x69c5,0x4eb4,0xa5,0xf5,0xa7,0x03,0x3f,0x51,0x32,0xcd);
+#endif
+
+
+#undef INTERFACE
 #define INTERFACE IDCompositionGaussianBlurEffect
 DECLARE_INTERFACE_IID_(IDCompositionGaussianBlurEffect, IDCompositionFilterEffect, "45D4D0B7-1BD4-454E-8894-2BFA68443033")
 {
@@ -574,6 +622,27 @@ __CRT_UUID_DECL(IDCompositionGaussianBlurEffect,0x45d4d0b7,0x1bd4,0x454e,0x88,0x
 #endif
 
 
+#undef INTERFACE
+#define INTERFACE IDCompositionColorMatrixEffect
+DECLARE_INTERFACE_IID_(IDCompositionColorMatrixEffect, IDCompositionFilterEffect, "C1170A22-3CE2-4966-90D4-55408BFC84C4")
+{
+    STDMETHOD(SetMatrix)(THIS_ const D2D1_MATRIX_5X4_F &matrix) PURE;
+#if defined(_MSC_VER) && defined(__cplusplus)
+    STDMETHOD(SetMatrixElement)(THIS_ int row, int column, float value) PURE;
+    STDMETHOD(SetMatrixElement)(THIS_ int row, int column, IDCompositionAnimation *animation) PURE;
+#else
+    STDMETHOD(SetMatrixElement)(THIS_ int row, int column, IDCompositionAnimation *animation) PURE;
+    STDMETHOD(SetMatrixElement)(THIS_ int row, int column, float value) PURE;
+#endif
+    STDMETHOD(SetAlphaMode)(THIS_ D2D1_COLORMATRIX_ALPHA_MODE mode) PURE;
+    STDMETHOD(SetClampOutput)(THIS_ BOOL clamp) PURE;
+};
+
+#ifdef __CRT_UUID_DECL
+__CRT_UUID_DECL(IDCompositionColorMatrixEffect,0xc1170a22,0x3ce2,0x4966,0x90,0xd4,0x55,0x40,0x8b,0xfc,0x84,0xc4);
+#endif
+
+
 /* WARNING: some of the arguments are replaced with void*, only what's used has been kept */
 #undef INTERFACE
 #define INTERFACE IDCompositionDevice3
@@ -581,13 +650,13 @@ DECLARE_INTERFACE_IID_(IDCompositionDevice3, IDCompositionDevice2, "0987CB06-F91
 {
     STDMETHOD(CreateGaussianBlurEffect)(THIS_ IDCompositionGaussianBlurEffect **gaussianBlurEffect) PURE;
     STDMETHOD(CreateBrightnessEffect)(THIS_ /* TODO IDCompositionBrightnessEffect */ void **brightnessEffect) PURE;
-    STDMETHOD(CreateColorMatrixEffect)(THIS_ /* TODO IDCompositionColorMatrixEffect */ void **colorMatrixEffect) PURE;
+    STDMETHOD(CreateColorMatrixEffect)(THIS_ IDCompositionColorMatrixEffect **colorMatrixEffect) PURE;
     STDMETHOD(CreateShadowEffect)(THIS_ /* TODO IDCompositionShadowEffect */ void **shadowEffect) PURE;
     STDMETHOD(CreateHueRotationEffect)(THIS_ /* IDCompositionHueRotationEffect */ void **hueRotationEffect) PURE;
     STDMETHOD(CreateSaturationEffect)(THIS_ IDCompositionSaturationEffect **saturationEffect) PURE;
     STDMETHOD(CreateTurbulenceEffect)(THIS_ /* IDCompositionTurbulenceEffect */ void **turbulenceEffect) PURE;
     STDMETHOD(CreateLinearTransferEffect)(THIS_ /* IDCompositionLinearTransferEffect */ void **linearTransferEffect) PURE;
-    STDMETHOD(CreateTableTransferEffect)(THIS_ /* IDCompositionTableTransferEffect */ void **tableTransferEffect) PURE;
+    STDMETHOD(CreateTableTransferEffect)(THIS_ IDCompositionTableTransferEffect **tableTransferEffect) PURE;
     STDMETHOD(CreateCompositeEffect)(THIS_ /* IDCompositionCompositeEffect */ void **compositeEffect) PURE;
     STDMETHOD(CreateBlendEffect)(THIS_ /* TODO IDCompositionBlendEffect */ void **blendEffect) PURE;
     STDMETHOD(CreateArithmeticCompositeEffect)(THIS_ /* IDCompositionArithmeticCompositeEffect */ void **arithmeticCompositeEffect) PURE;
@@ -597,6 +666,68 @@ DECLARE_INTERFACE_IID_(IDCompositionDevice3, IDCompositionDevice2, "0987CB06-F91
 #ifdef __CRT_UUID_DECL
 __CRT_UUID_DECL(IDCompositionDevice3,0x0987cb06,0xf916,0x48bf,0x8d,0x35,0xce,0x76,0x41,0x78,0x1b,0xd9);
 #endif
+
+#if (NTDDI_VERSION >= NTDDI_WIN10_NI)
+
+#undef INTERFACE
+#define INTERFACE IDCompositionTexture
+DECLARE_INTERFACE_IID_(IDCompositionTexture, IUnknown, "929BB1AA-725F-433B-ABD7-273075A835F2")
+{
+    STDMETHOD(SetSourceRect)(THIS_ const D2D_RECT_U &sourceRect) PURE;
+    STDMETHOD(SetColorSpace)(THIS_ DXGI_COLOR_SPACE_TYPE colorSpace) PURE;
+    STDMETHOD(SetAlphaMode)(THIS_ DXGI_ALPHA_MODE alphaMode) PURE;
+    STDMETHOD(GetAvailableFence)(THIS_ UINT64 *fenceValue, REFIID iid, void **availableFence) PURE;
+};
+
+#ifdef __CRT_UUID_DECL
+__CRT_UUID_DECL(IDCompositionTexture, 0x929bb1aa, 0x725f, 0x433b, 0xab, 0xd7, 0x27, 0x30, 0x75, 0xa8, 0x35, 0xf2);
+#endif
+
+#undef INTERFACE
+#define INTERFACE IDCompositionDevice4
+DECLARE_INTERFACE_IID_(IDCompositionDevice4, IDCompositionDevice3, "85FC5CCA-2DA6-494C-86B6-4A775C049B8A")
+{
+    STDMETHOD(CheckCompositionTextureSupport)(THIS_ IUnknown *renderingDevice, WINBOOL *supportsCompositionTextures) PURE;
+    STDMETHOD(CreateCompositionTexture)(THIS_ IUnknown *d3dTexture, IDCompositionTexture **compositionTexture) PURE;
+};
+
+#ifdef __CRT_UUID_DECL
+__CRT_UUID_DECL(IDCompositionDevice4, 0x85fc5cca, 0x2da6, 0x494c, 0x86, 0xb6, 0x4a, 0x77, 0x5c, 0x04, 0x9b, 0x8a);
+#endif
+
+#endif /* (NTDDI_VERSION >= NTDDI_WIN10_NI) */
+
+#if (NTDDI_VERSION >= NTDDI_WIN11_GE)
+
+#undef INTERFACE
+#define INTERFACE IDCompositionDynamicTexture
+DECLARE_INTERFACE_IID_(IDCompositionDynamicTexture, IUnknown, "A1DE1D3F-6405-447F-8E95-1383A34B0277")
+{
+#if defined(_MSC_VER) && defined(__cplusplus)
+    STDMETHOD(SetTexture)(THIS_ IDCompositionTexture *pTexture) PURE;
+    STDMETHOD(SetTexture)(THIS_ IDCompositionTexture *pTexture, const D2D_RECT_L *pRects, size_t rectCount) PURE;
+#else
+    STDMETHOD(SetTexture)(THIS_ IDCompositionTexture *pTexture, const D2D_RECT_L *pRects, size_t rectCount) PURE;
+    STDMETHOD(SetTexture)(THIS_ IDCompositionTexture *pTexture) PURE;
+#endif
+};
+
+#ifdef __CRT_UUID_DECL
+__CRT_UUID_DECL(IDCompositionDynamicTexture, 0xa1de1d3f, 0x6405, 0x447f, 0x8e, 0x95, 0x13, 0x83, 0xa3, 0x4b, 0x02, 0x77);
+#endif
+
+#undef INTERFACE
+#define INTERFACE IDCompositionDevice5
+DECLARE_INTERFACE_IID_(IDCompositionDevice5, IDCompositionDevice4, "2C6BEBFE-A603-472F-AF34-D2443356E61B")
+{
+    STDMETHOD(CreateDynamicTexture)(THIS_ IDCompositionDynamicTexture **compositionDynamicTexture) PURE;
+};
+
+#ifdef __CRT_UUID_DECL
+__CRT_UUID_DECL(IDCompositionDevice5, 0x2c6bebfe, 0xa603, 0x472f, 0xaf, 0x34, 0xd2, 0x44, 0x33, 0x56, 0xe6, 0x1b);
+#endif
+
+#endif /* (NTDDI_VERSION >= NTDDI_WIN11_GE) */
 
 #endif /* WINAPI_PARTITION_DESKTOP */
 

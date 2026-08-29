@@ -116,7 +116,6 @@ extern "C" {
 #define TIME_UTC 1
 #endif
 
-#ifdef _UCRT
   _CRTIMP int *__cdecl __daylight(void);
   _CRTIMP long *__cdecl __dstbias(void);
   _CRTIMP long *__cdecl __timezone(void);
@@ -125,12 +124,6 @@ extern "C" {
 #define _dstbias (* __dstbias())
 #define _timezone (* __timezone())
 #define _tzname (__tzname())
-#else
-  __MINGW_IMPORT int _daylight;
-  __MINGW_IMPORT long _dstbias;
-  __MINGW_IMPORT long _timezone;
-  __MINGW_IMPORT char * _tzname[2];
-#endif
 
 #undef __MINGW_STRFTIME_FORMAT
 
@@ -214,9 +207,9 @@ extern "C" {
 #if !defined (RC_INVOKED) && !defined (_INC_WTIME_INL)
 #define _INC_WTIME_INL
 #ifndef _USE_32BIT_TIME_T
-  wchar_t *__cdecl _wctime(const time_t *_Time) __MINGW_ATTRIB_DEPRECATED_SEC_WARN __MINGW_ASM_CALL(_wctime64);
+  wchar_t *__cdecl _wctime(const time_t *_Time) __MINGW_ASM_CALL(_wctime64) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
 #else
-  wchar_t *__cdecl _wctime(const time_t *_Time) __MINGW_ATTRIB_DEPRECATED_SEC_WARN __MINGW_ASM_CALL(_wctime32);
+  wchar_t *__cdecl _wctime(const time_t *_Time) __MINGW_ASM_CALL(_wctime32) __MINGW_ATTRIB_DEPRECATED_SEC_WARN;
 #endif
 #endif
 
@@ -234,6 +227,11 @@ extern "C" {
 
 #ifndef RC_INVOKED
 
+/*
+ * To prevent ABI issues, the mingw-w64 runtime should not call these
+ * functions. Instead it should call the fixed-size variants.
+ */
+#ifndef _CRTBLD
 #ifdef _USE_32BIT_TIME_T
 time_t __CRTDECL time(time_t *_Time) __MINGW_ASM_CALL(_time32);
 #ifdef _UCRT
@@ -263,6 +261,7 @@ errno_t __CRTDECL ctime_s(char *_Buf,size_t _SizeInBytes,const time_t *_Time) __
 time_t __CRTDECL mktime(struct tm *_Tm) __MINGW_ASM_CALL(_mktime64);
 time_t __CRTDECL _mkgmtime(struct tm *_Tm) __MINGW_ASM_CALL(_mkgmtime64);
 #endif
+#endif /* _CRTBLD */
 
 #endif /* !RC_INVOKED */
 
